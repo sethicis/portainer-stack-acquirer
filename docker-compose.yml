@@ -101,30 +101,30 @@ services:
     ports:
       - 6246:6246
     restart: unless-stopped
-  #bitmagnet:
-  #  image: sethicis/bitmagnet:custom
-  #  build:
-  #    context: bitmagnet_src
-  #    dockerfile: Dockerfile
-  #  network_mode: service:qbit-vpn
-  #  container_name: bitmagnet
-  #  volumes:
-  #    - ./bitmagnet/config:/root/.config/bitmagnet
-  #    - ./bitmagnet/data:/root/.local/share/bitmagnet
-  #  restart: unless-stopped
-  #  environment:
-  #    - LOG_FILE_ROTATOR_ENABLED=true
-  #    - POSTGRES_HOST=postgres
-  #    - POSTGRES_PASSWORD=postgres
-  #  depends_on:
-  #    postgres:
-  #      condition: service_healthy
-  #    qbit-vpn:
-  #      condition: service_healthy
-  #  command:
-  #    - worker
-  #    - run
-  #    - --all
+  # bitmagnet:
+  #   image: sethicis/bitmagnet:custom
+  #   build:
+  #     context: bitmagnet_src
+  #     dockerfile: Dockerfile
+  #   network_mode: service:qbit-vpn
+  #   container_name: bitmagnet
+  #   volumes:
+  #     - ./bitmagnet/config:/root/.config/bitmagnet
+  #     - ./bitmagnet/data:/root/.local/share/bitmagnet
+  #   restart: unless-stopped
+  #   environment:
+  #     - LOG_FILE_ROTATOR_ENABLED=true
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     qbit-vpn:
+  #       condition: service_healthy
+  #   command:
+  #     - worker
+  #     - run
+  #     - --all
   # postgres:
   #   image: postgres:16-alpine
   #   container_name: bitmagnet-postgres
@@ -133,18 +133,18 @@ services:
   #   networks:
   #     bitmagnet:
   #       ipv4_address: 192.168.55.211
-    # ports:
-    #   - "5432:5432"
-    # shm_size: 1g
-    # restart: unless-stopped
-    # environment:
-    #   - POSTGRES_PASSWORD=postgres
-    #   - POSTGRES_DB=bitmagnet
-    #   - PGUSER=postgres
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready"]
-    #   interval: 10s
-    #   start_period: 20s
+  #   ports:
+  #     - "5432:5432"
+  #   shm_size: 1g
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=bitmagnet
+  #     - PGUSER=postgres
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready"]
+  #     interval: 10s
+  #     start_period: 20s
 networks:
   bitmagnet:
     driver: bridge
