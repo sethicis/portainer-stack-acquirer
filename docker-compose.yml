@@ -1,5 +1,163 @@
----
 services:
-  hello-world:
-    image: hello-world:latest
-    restart: "no"
+  qbit-vpn:
+    image: j4ym0/pia-qbittorrent:5.1.2-alpine
+    container_name: qbitvpn
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - media-data:/data
+      - qbit-config:/config
+    init: true
+    restart: unless-stopped
+    ports:
+      - 8888:8888
+      # For bitmagnet
+      - 3333:3333
+    env_file:
+      - ${COMPOSE_DIR}/.pia_env
+    environment:
+      - UID=112
+      - GID=65536
+      - TZ=America/Chicago
+      - PORT_FORWARDING=true
+      - REGION=Netherlands
+      - ALLOW_LOCAL_SUBNET_TRAFFIC=true
+    extra_hosts:
+      - "postgres:192.168.55.211"
+    networks:
+      bitmagnet:
+        ipv4_address: 192.168.55.222
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    container_name: flaresolverr
+    environment:
+      - PUID=112
+      - PGID=65536
+      - TZ=Europe/London
+      - LOG_LEVEL=info
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:6.1.1
+    container_name: radarr
+    environment:
+      - PUID=112
+      - PGID=65536
+      - TZ=America/Chicago
+      - UMASK=012
+    volumes:
+      - ${COMPOSE_DIR}/radarr_config:/config
+      - media-data:/data
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:4.0.17
+    container_name: sonarr
+    environment:
+      - PUID=112
+      - PGID=65536
+      - TZ=America/Chicago
+      - UMASK=012
+    volumes:
+      - ${COMPOSE_DIR}/sonarr_config:/config
+      - media-data:/data
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:2.3.5
+    container_name: prowlarr
+    environment:
+      - PUID=112
+      - PGID=65536
+      - TZ=Etc/UTC
+    ports:
+      - 9696:9696
+    volumes:
+      - ${COMPOSE_DIR}/prowlarr_config:/config
+    restart: unless-stopped
+  overseerr:
+    # TODO: upgrade to seerr image
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    user: 112:65536
+    environment:
+      - TZ=America/Chicago
+      - LOG_LEVEL=debug
+    ports:
+      - 5055:5055
+    volumes:
+      - ${COMPOSE_DIR}/overseerr_config:/app/config
+    restart: unless-stopped
+  maintainerr:
+    image: ghcr.io/maintainerr/maintainerr:3.12.0
+    container_name: maintainerr
+    user: 112:65536
+    volumes:
+      - media-data:/opt/media-data
+      - ${COMPOSE_DIR}/maintainerr_config:/opt/data
+    ports:
+      - 6246:6246
+    restart: unless-stopped
+  #bitmagnet:
+  #  image: sethicis/bitmagnet:custom
+  #  build:
+  #    context: bitmagnet_src
+  #    dockerfile: Dockerfile
+  #  network_mode: service:qbit-vpn
+  #  container_name: bitmagnet
+  #  volumes:
+  #    - ./bitmagnet/config:/root/.config/bitmagnet
+  #    - ./bitmagnet/data:/root/.local/share/bitmagnet
+  #  restart: unless-stopped
+  #  environment:
+  #    - LOG_FILE_ROTATOR_ENABLED=true
+  #    - POSTGRES_HOST=postgres
+  #    - POSTGRES_PASSWORD=postgres
+  #  depends_on:
+  #    postgres:
+  #      condition: service_healthy
+  #    qbit-vpn:
+  #      condition: service_healthy
+  #  command:
+  #    - worker
+  #    - run
+  #    - --all
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: bitmagnet-postgres
+  #   volumes:
+  #     - ./bitmagnet/postgres:/var/lib/postgresql/data
+  #   networks:
+  #     bitmagnet:
+  #       ipv4_address: 192.168.55.211
+    # ports:
+    #   - "5432:5432"
+    # shm_size: 1g
+    # restart: unless-stopped
+    # environment:
+    #   - POSTGRES_PASSWORD=postgres
+    #   - POSTGRES_DB=bitmagnet
+    #   - PGUSER=postgres
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready"]
+    #   interval: 10s
+    #   start_period: 20s
+networks:
+  bitmagnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.55.0/24
+          gateway: 192.168.55.1
+volumes:
+  media-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NAS_HOST},rw,soft,nolock,nfsvers=4"
+      device: ":/volume1/content/data"
+  qbit-config: {}

@@ -1,0 +1,9 @@
+maintainerr_config/
+overseerr_config/
+overseerr_config_bak/
+prowlarr_config/
+sonarr_config/
+radarr_config/
+.pia_env
+to_be_deleted*
+.git_bak
