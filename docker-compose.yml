@@ -20,6 +20,8 @@ services:
       - PORT_FORWARDING=true
       - REGION=Netherlands
       - ALLOW_LOCAL_SUBNET_TRAFFIC=true
+      - USER=${PIA_USER}
+      - PASSWORD=${PIA_PASSWORD}
     extra_hosts:
       - "postgres:192.168.55.211"
     networks:
