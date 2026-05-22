@@ -13,8 +13,6 @@ services:
       - 8888:8888
       # For bitmagnet
       - 3333:3333
-    env_file:
-      - ${COMPOSE_DIR}/.pia_env
     environment:
       - UID=112
       - GID=65536
