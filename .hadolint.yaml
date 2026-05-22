@@ -1,0 +1,12 @@
+# .hadolint.yaml example
+ignored:
+  - DL3008 # Ignore 'Pin versions in apt-get install'
+  - DL3015 # Ignore 'Avoid additional packages'
+
+trustedRegistries:
+  - docker.io
+  - ghcr.io
+
+label-schema:
+  maintainer: text
+  version: semver

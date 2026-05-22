@@ -1,0 +1,48 @@
+name: Docker Style Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+
+permissions: {}
+
+concurrency:
+  group: linting-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-docker-and-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfiles with hadolint
+        run: |
+          mapfile -t dockerfiles < <(find . -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \))
+          if [ "${#dockerfiles[@]}" -eq 0 ]; then
+            echo "No Dockerfiles found."
+            exit 0
+          fi
+
+          for file in "${dockerfiles[@]}"; do
+            echo "Linting $file"
+            docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 --ignore DL3015 - < "$file"
+          done
+
+      - name: Install yamllint
+        run: python -m pip install --disable-pip-version-check yamllint
+
+      - name: Lint docker-compose files with yamllint
+        run: |
+          mapfile -t compose_files < <(find . -type f \( -name 'docker-compose*.yml' -o -name 'docker-compose*.yaml' \))
+          if [ "${#compose_files[@]}" -eq 0 ]; then
+            echo "No docker-compose files found."
+            exit 0
+          fi
+
+          yamllint --strict "${compose_files[@]}"
