@@ -66,15 +66,8 @@ jobs:
     needs: build-docker-image
     runs-on: ubuntu-latest
     # If the hook is defined, run the job, otherwise skip
-    if: vars.PORTAINER_HOOK && !failure()
+    if: ${{ !failure() }}
     steps:
       - name: Trigger Portainer webhook
-        env:
-          PORTAINER_HOOK: ${{ vars.PORTAINER_HOOK }}
         run: |
-          if [ -z "$PORTAINER_HOOK" ]; then
-            echo "PORTAINER_HOOK is not set"
-            exit 1
-          fi
-
-          curl --fail --show-error --silent --request POST "$PORTAINER_HOOK"
+          curl --fail --show-error --silent --request POST "${{ secrets.PORTAINER_HOOK }}"
