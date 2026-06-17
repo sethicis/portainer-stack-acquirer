@@ -79,8 +79,8 @@ services:
       - ${COMPOSE_DIR}/prowlarr_config:/config
     restart: unless-stopped
   overseerr:
-    # TODO: upgrade to seerr image
-    image: sctx/overseerr:latest
+    image: ghcr.io/seerr-team/seerr:v3.3.0
+    # Original name of seerr
     container_name: overseerr
     user: 112:65536
     environment:
