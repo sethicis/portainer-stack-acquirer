@@ -78,6 +78,7 @@ services:
     volumes:
       - ${COMPOSE_DIR}/prowlarr_config:/config
     restart: unless-stopped
+  # AKA seerr
   overseerr:
     image: ghcr.io/seerr-team/seerr:v3.3.0
     # Original name of seerr
@@ -90,6 +91,12 @@ services:
       - 5055:5055
     volumes:
       - ${COMPOSE_DIR}/overseerr_config:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
     restart: unless-stopped
   maintainerr:
     image: ghcr.io/maintainerr/maintainerr:3.12.0
