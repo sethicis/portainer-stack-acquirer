@@ -73,7 +73,7 @@ services:
       - 8989:8989
     restart: unless-stopped
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.4.0
+    image: ghcr.io/hotio/prowlarr:release-2.5.2.5491
     container_name: prowlarr
     networks:
       - cross_net
