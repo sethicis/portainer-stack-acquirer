@@ -41,7 +41,7 @@ services:
       - 8191:8191
     restart: unless-stopped
   radarr:
-    image: lscr.io/linuxserver/radarr:6.2.1
+    image: lscr.io/linuxserver/radarr:6.3.0
     container_name: radarr
     networks:
       - cross_net
