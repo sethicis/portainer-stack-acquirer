@@ -88,7 +88,7 @@ services:
     restart: unless-stopped
   # AKA seerr
   overseerr:
-    image: ghcr.io/seerr-team/seerr:v3.3.0
+    image: ghcr.io/seerr-team/seerr:v3.4.1
     # Original name of seerr
     container_name: overseerr
     user: 112:65536
