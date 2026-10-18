@@ -1,6 +1,6 @@
 services:
   qbit-vpn:
-    image: j4ym0/pia-qbittorrent:5.2.2-alpine
+    image: j4ym0/pia-qbittorrent:5.2.3-alpine
     container_name: qbitvpn
     cap_add:
       - NET_ADMIN
