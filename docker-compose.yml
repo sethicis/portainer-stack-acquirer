@@ -28,7 +28,7 @@ services:
       bitmagnet:
         ipv4_address: 192.168.55.222
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
+    image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
     container_name: flaresolverr
     networks:
       - cross_net
